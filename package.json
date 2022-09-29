@@ -1,7 +1,7 @@
 {
   "scripts": {
     "test": "jest",
-    "server": "nodemon server.js --watch"
+    "server": "nodemon server/server.js --watch"
   },
   "dependencies": {
     "axios": "^0.27.2",
