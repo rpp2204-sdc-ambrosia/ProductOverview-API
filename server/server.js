@@ -47,27 +47,31 @@ app.get('/products/:product_id/styles', (req, res) => {
   .query(`SELECT product_style_id,name,original_price,sale_price,"default" FROM product_style WHERE product_id = '${req_id}'`)
   .then((data) => {
     console.log('query result: ', data.rows)
+    let storage = [];
     let resultArr = data.rows.map((obj) => {
-      console.log('inner map: ', obj)
+      // console.log('inner map: ', obj)
       return pool
       .query(`SELECT * FROM photo WHERE product_style_id = '${obj.product_style_id}'`)
       .then((data) => {
-        console.log('photo results: ', data.rows)
+        // console.log('photo results: ', data.rows)
         obj.photos = data.rows
       })
       .then((data) => {
         return pool.query(`SELECT quantity,size FROM sku WHERE product_style_id = '${obj.product_style_id}'`)
       })
       .then((data) => {
-        console.log('sku results: ', data.rows)
-        obj.skus = data.rows
-      })
-      .then(data => resultArr.push(obj))
-      .then(data  => res_obj.results = resultArr)
-      .then((data) => {
-        console.log('Inner res_obj: ', res_obj)
+        // console.log('sku results: ', data.rows)
+        obj.skus = data.rows;
+        storage.push(obj);
+        res_obj = storage;
         return res_obj;
       })
+      // .then(data => resultArr.push(obj))
+      // .then(data  => res_obj.results = resultArr)
+      // .then((data) => {
+      //   console.log('Inner res_obj: ', res_obj)
+      //   return res_obj;
+      // })
       .catch(err => console.log('error: ', err))
 
     })
