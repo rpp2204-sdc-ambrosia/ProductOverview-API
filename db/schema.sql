@@ -46,9 +46,8 @@ CREATE TABLE photo(
 )
 
 -- This table will be joined when querying
--- CREATE TABLE related(
---   related_id SERIAL UNIQUE PRIMARY KEY,
---   CONSTRAINT related_product_id FOREIGN KEY(product_id)
---   REFERENCES product(product_id),
---   product_id INT REFERENCES product(product_id)
--- )
+CREATE TABLE related(
+  related_id SERIAL UNIQUE PRIMARY KEY,
+  current_product_id INT REFERENCES product(product_id),
+  related_product_id INT REFERENCES product(product_id)
+)

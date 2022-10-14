@@ -2,10 +2,20 @@ const app = require('./app');
 const { pool, query } = require('../db/index.js')
 
 app.get('/products', (req, res) => {
-  pool
-  .query('SELECT * FROM product')
-  .then(res => console.log('results: ', res.rows))
-  .catch(err => console.log('error: ', err))
+
+  const count = req.query.count;
+
+  if (!count) {
+    pool
+    .query('SELECT * FROM product LIMIT 5')
+    .then(data => res.send(data.rows))
+    .catch(err => console.log('error: ', err))
+  } else {
+    pool
+    .query(`SELECT * FROM product LIMIT ${count}`)
+    .then(data => res.send(data.rows))
+    .catch(err => console.log('error: ', err))
+  }
 
 })
 
@@ -34,11 +44,11 @@ app.get('/products/:product_id/styles', (req, res) => {
   };
 
   pool
-  .query(`SELECT product_style_id,name,original_price,sale_price,"default" FROM product_style WHERE product_id = '${req_id}' ORDER BY product_id ASC`)
+  .query(`SELECT product_style_id,name,original_price,sale_price,"default" FROM product_style WHERE product_id = '${req_id}'`)
   .then((data) => {
-
+    console.log('query result: ', data.rows)
     let resultArr = data.rows.map((obj) => {
-      //console.log('inner map: ', obj)
+      console.log('inner map: ', obj)
       return pool
       .query(`SELECT * FROM photo WHERE product_style_id = '${obj.product_style_id}'`)
       .then((data) => {
@@ -55,7 +65,7 @@ app.get('/products/:product_id/styles', (req, res) => {
       .then(data => resultArr.push(obj))
       .then(data  => res_obj.results = resultArr)
       .then((data) => {
-        // console.log('Inner res_obj: ', res_obj)
+        console.log('Inner res_obj: ', res_obj)
         return res_obj;
       })
       .catch(err => console.log('error: ', err))
@@ -66,12 +76,6 @@ app.get('/products/:product_id/styles', (req, res) => {
     .catch(err => console.log('error: ', err))
 
   })
-
-  // try {
-  //   const ps_query = await pool.query(`SELECT product_style_id,name,original_price,sale_price,"default" FROM product_style WHERE product_id = '${req_id}' ORDER BY product_id ASC`)
-
-  // }
-
 
 })
 
