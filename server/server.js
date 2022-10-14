@@ -40,38 +40,31 @@ app.get('/products/:product_id/styles', (req, res) => {
   const req_id = req.params.product_id
   console.log('req_id: ', req_id)
   let res_obj = {
-    product_id: req_id
+    product_id: req_id,
+    results: []
   };
 
   pool
   .query(`SELECT product_style_id,name,original_price,sale_price,"default" FROM product_style WHERE product_id = '${req_id}'`)
   .then((data) => {
-    console.log('query result: ', data.rows)
     let storage = [];
     let resultArr = data.rows.map((obj) => {
-      // console.log('inner map: ', obj)
       return pool
       .query(`SELECT * FROM photo WHERE product_style_id = '${obj.product_style_id}'`)
       .then((data) => {
-        // console.log('photo results: ', data.rows)
         obj.photos = data.rows
       })
       .then((data) => {
         return pool.query(`SELECT quantity,size FROM sku WHERE product_style_id = '${obj.product_style_id}'`)
       })
       .then((data) => {
-        // console.log('sku results: ', data.rows)
+        console.log('sku data: ', data)
         obj.skus = data.rows;
+        console.log('obj: ', obj)
         storage.push(obj);
-        res_obj = storage;
+        res_obj.results = [...storage]
         return res_obj;
       })
-      // .then(data => resultArr.push(obj))
-      // .then(data  => res_obj.results = resultArr)
-      // .then((data) => {
-      //   console.log('Inner res_obj: ', res_obj)
-      //   return res_obj;
-      // })
       .catch(err => console.log('error: ', err))
 
     })
@@ -84,6 +77,20 @@ app.get('/products/:product_id/styles', (req, res) => {
 })
 
 app.get('/products/:product_id/related', (req, res) => {
+  const req_id = req.params.product_id;
+
+  console.log('req_id: ', req_id)
+
+  pool
+  .query(`SELECT related_product_id FROM related WHERE current_product_id = '${req_id}'`)
+  .then((data) => {
+    if (data.rows.length > 0) {
+      let relatedNums = data.rows.map(obj => obj.related_product_id)
+      res.send(relatedNums)
+    }
+   res.send([])
+})
+  .catch(err => console.log('error: ', err));
 
 })
 
