@@ -25,20 +25,20 @@ app.get('/products/:product_id', (req, res) => {
   pool
   // .query(`SELECT * FROM product INNER JOIN features ON product.product_id = features.product_id WHERE product.product_id = '${req_id}'`)
   .query(`SELECT * FROM product WHERE product_id = '${req_id}'`)
-  .then(res => res_obj = res.rows[0])
+  .then(data => res_obj = data.rows[0])
   .catch(err => console.log('error: ', err))
 
   pool
   .query(`SELECT name,value FROM features WHERE product_id = '${req_id}'`)
-  .then(res => res_obj.features = res.rows)
-  .then(res => console.log('new obj shape: ', res_obj))
+  .then(data => res_obj.features = data.rows)
+  .then(data => res.send(res_obj))
   .catch(err => console.log('error: ', err))
 
 })
 
 app.get('/products/:product_id/styles', (req, res) => {
   const req_id = req.params.product_id
-  console.log('req_id: ', req_id)
+  // console.log('req_id: ', req_id)
   let res_obj = {
     product_id: req_id,
     results: []
@@ -50,7 +50,7 @@ app.get('/products/:product_id/styles', (req, res) => {
     let storage = [];
     let resultArr = data.rows.map((obj) => {
       return pool
-      .query(`SELECT * FROM photo WHERE product_style_id = '${obj.product_style_id}'`)
+      .query(`SELECT thumbnail_url,url FROM photo WHERE product_style_id = '${obj.product_style_id}'`)
       .then((data) => {
         obj.photos = data.rows
       })
@@ -79,16 +79,15 @@ app.get('/products/:product_id/styles', (req, res) => {
 app.get('/products/:product_id/related', (req, res) => {
   const req_id = req.params.product_id;
 
-  console.log('req_id: ', req_id)
-
   pool
   .query(`SELECT related_product_id FROM related WHERE current_product_id = '${req_id}'`)
   .then((data) => {
     if (data.rows.length > 0) {
       let relatedNums = data.rows.map(obj => obj.related_product_id)
       res.send(relatedNums)
+    } else {
+      res.send([])
     }
-   res.send([])
 })
   .catch(err => console.log('error: ', err));
 
