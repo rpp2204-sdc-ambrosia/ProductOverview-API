@@ -1,7 +1,8 @@
 const app = require('./app');
 const { pool, query } = require('../db/index.js')
+const router = require('express').Router();
 
-app.get('/products', (req, res) => {
+router.get('/products', (req, res) => {
 
   const count = req.query.count;
 
@@ -19,7 +20,7 @@ app.get('/products', (req, res) => {
 
 })
 
-app.get('/products/:product_id', (req, res) => {
+router.get('/products/:product_id', (req, res) => {
   const req_id = req.params.product_id;
   let res_obj;
   pool
@@ -36,7 +37,7 @@ app.get('/products/:product_id', (req, res) => {
 
 })
 
-app.get('/products/:product_id/styles', (req, res) => {
+router.get('/products/:product_id/styles', (req, res) => {
   const req_id = req.params.product_id
   // console.log('req_id: ', req_id)
   let res_obj = {
@@ -76,7 +77,7 @@ app.get('/products/:product_id/styles', (req, res) => {
 
 })
 
-app.get('/products/:product_id/related', (req, res) => {
+router.get('/products/:product_id/related', (req, res) => {
   const req_id = req.params.product_id;
 
   pool
@@ -94,6 +95,5 @@ app.get('/products/:product_id/related', (req, res) => {
 })
 
 
-app.listen(3000, () => {
-  console.log("listening on port 3000!");
-});
+
+module.exports = router;
