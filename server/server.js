@@ -39,7 +39,7 @@ router.get('/products/:product_id', (req, res) => {
 
 router.get('/products/:product_id/styles', (req, res) => {
   const req_id = req.params.product_id
-  // console.log('req_id: ', req_id)
+
   let res_obj = {
     product_id: req_id,
     results: []
@@ -59,9 +59,7 @@ router.get('/products/:product_id/styles', (req, res) => {
         return pool.query(`SELECT quantity,size FROM sku WHERE product_style_id = '${obj.product_style_id}'`)
       })
       .then((data) => {
-        console.log('sku data: ', data)
         obj.skus = data.rows;
-        console.log('obj: ', obj)
         storage.push(obj);
         res_obj.results = [...storage]
         return res_obj;

@@ -1,7 +1,7 @@
 {
   "scripts": {
     "test": "jest",
-    "server": "nodemon server/server.js --watch"
+    "server": "nodemon server/app.js --watch"
   },
   "dependencies": {
     "assert": "^2.0.0",
