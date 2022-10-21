@@ -1,6 +1,6 @@
-
+-- id SERIAL UNIQUE PRIMARY KEY
 CREATE TABLE product(
-  product_id SERIAL UNIQUE PRIMARY KEY,
+  id SERIAL UNIQUE PRIMARY KEY,
   name VARCHAR NOT NULL,
   slogan VARCHAR NOT NULL,
   description VARCHAR NOT NULL,
@@ -15,20 +15,23 @@ CREATE TABLE product(
 --   feature_id INT REFERENCES features(features_id)
 -- )
 
+-- feature VARCHAR NOT NULL
 CREATE TABLE features(
   features_id SERIAL UNIQUE PRIMARY KEY,
   product_id INT NOT NULL,
-  name VARCHAR NOT NULL,
+  feature VARCHAR NOT NULL,
   value VARCHAR NOT NULL
 )
 
+-- style_id SERIAL UNIQUE PRIMARY KEY
+--"default?"
 CREATE TABLE product_style(
-  product_style_id SERIAL UNIQUE PRIMARY KEY,
+  style_id SERIAL UNIQUE PRIMARY KEY,
   product_id INT REFERENCES product(product_id),
   name VARCHAR NOT NULL,
   sale_price TEXT,
   original_price INT NOT NULL,
-  "default" BOOLEAN NOT NULL
+  "default?" BOOLEAN NOT NULL
 )
 
 CREATE TABLE sku(
