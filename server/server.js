@@ -52,6 +52,7 @@ router.get('/products/:product_id/styles', (req, res) => {
   .query(`SELECT style_id,name,original_price,sale_price,"default?" FROM product_style WHERE product_id = '${req_id}'`)
   .then((data) => {
     let storage = [];
+    let obj_skus;
     let resultArr = data.rows.map((obj) => {
       return pool
       .query(`SELECT thumbnail_url,url FROM photo WHERE product_style_id = '${obj.style_id}'`)
@@ -59,19 +60,31 @@ router.get('/products/:product_id/styles', (req, res) => {
         obj.photos = data.rows
       })
       .then((data) => {
-        return pool.query(`SELECT quantity,size FROM sku WHERE product_style_id = '${obj.style_id}'`)
+        return pool.query(`SELECT sku_id,quantity,size FROM sku WHERE product_style_id = '${obj.style_id}'`)
       })
       .then((data) => {
-        obj.skus = data.rows;
+        obj.skus = {};
+        data.rows.forEach((style) => {
+          obj.skus[`${style.sku_id}`] = {quantity: style.quantity, size: style.size}
+        })
         storage.push(obj);
         res_obj.results = [...storage]
         return res_obj;
       })
-      .catch(err => console.log('error: ', err))
+      // return pool
+      // .query(`SELECT * FROM photo INNER JOIN sku ON photo.photo_id = sku.sku_id WHERE photo.product_style_id = ${obj.style_id}`)
+      // .then((data) => {
+      //   console.log('returned inner join data: ', data.rows)
+      // })
+      // .catch(err => console.log('error: ', err))
 
     })
     Promise.all(resultArr)
-    .then(data => res.send(res_obj))
+    .then((data) => {
+      // console.log('storage after: ', res_obj)
+      // console.log('obj_skus: ', obj_skus)
+      res.send(res_obj)
+    })
     .catch(err => console.log('error: ', err))
 
   })
