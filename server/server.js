@@ -29,14 +29,21 @@ router.get('/products/:product_id', (req, res) => {
   pool
   // .query(`SELECT * FROM product INNER JOIN features ON product.product_id = features.product_id WHERE product.product_id = '${req_id}'`)
   .query(`SELECT * FROM product WHERE id = '${req_id}'`)
-  .then(data => res_obj = data.rows[0])
+  .then((data) => {
+    res_obj = data.rows[0]
+    return pool
+    .query(`SELECT feature,value FROM features WHERE product_id = '${req_id}'`)
+    .then(data => res_obj.features = data.rows)
+    .then(data => res.send(res_obj))
+    .catch(err => console.log('error: ', err))
+  })
   .catch(err => console.log('error: ', err))
 
-  pool
-  .query(`SELECT feature,value FROM features WHERE product_id = '${req_id}'`)
-  .then(data => res_obj.features = data.rows)
-  .then(data => res.send(res_obj))
-  .catch(err => console.log('error: ', err))
+  // pool
+  // .query(`SELECT feature,value FROM features WHERE product_id = '${req_id}'`)
+  // .then(data => res_obj.features = data.rows)
+  // .then(data => res.send(res_obj))
+  // .catch(err => console.log('error: ', err))
 
 })
 
@@ -81,8 +88,6 @@ router.get('/products/:product_id/styles', (req, res) => {
     })
     Promise.all(resultArr)
     .then((data) => {
-      // console.log('storage after: ', res_obj)
-      // console.log('obj_skus: ', obj_skus)
       res.send(res_obj)
     })
     .catch(err => console.log('error: ', err))
