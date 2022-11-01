@@ -27,7 +27,7 @@ CREATE TABLE features(
 --"default?"
 CREATE TABLE product_style(
   style_id SERIAL UNIQUE PRIMARY KEY,
-  product_id INT REFERENCES product(product_id),
+  product_id INT REFERENCES product(id),
   name VARCHAR NOT NULL,
   sale_price TEXT,
   original_price INT NOT NULL,
@@ -36,14 +36,14 @@ CREATE TABLE product_style(
 
 CREATE TABLE sku(
   sku_id SERIAL UNIQUE PRIMARY KEY,
-  product_style_id INT REFERENCES product_style(product_style_id),
+  product_style_id INT REFERENCES product_style(style_id),
   size VARCHAR NOT NULL,
   quantity INT NOT NULL
 )
 
 CREATE TABLE photo(
   photo_id SERIAL UNIQUE PRIMARY KEY,
-  product_style_id INT REFERENCES product_style(product_style_id),
+  product_style_id INT REFERENCES product_style(style_id),
   thumbnail_url VARCHAR NOT NULL,
   url VARCHAR NOT NULL
 )
@@ -51,6 +51,6 @@ CREATE TABLE photo(
 -- This table will be joined when querying
 CREATE TABLE related(
   related_id SERIAL UNIQUE PRIMARY KEY,
-  current_product_id INT REFERENCES product(product_id),
-  related_product_id INT REFERENCES product(product_id)
+  current_product_id INT REFERENCES product(id),
+  related_product_id INT REFERENCES product(id)
 )
