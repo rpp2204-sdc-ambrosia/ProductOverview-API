@@ -1,4 +1,4 @@
-const app = require('./app');
+const app = require('../server/app.js');
 const { pool, query } = require('../db/index.js')
 const router = require('express').Router();
 
