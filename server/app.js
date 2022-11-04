@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
 
 app.get("/loaderio-7e85e7d29e5a01f1b2a1d014c29ec27a.txt", (req, res) => {
   // console.log('result: ', `${__dirname}/loaderio-7e85e7d29e5a01f1b2a1d014c29ec27a.txt`)
-  res.sendFile(`loaderio-7e85e7d29e5a01f1b2a1d014c29ec27a.txt`);
+  res.sendFile(`${__dirname}/loaderio-7e85e7d29e5a01f1b2a1d014c29ec27a.txt`);
 });
 
 app.listen(3000, () => {
